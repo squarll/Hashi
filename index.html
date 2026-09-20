@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f6f2f7" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Hashi" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-180.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>Hashi</title>
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">HASHI</p>
+        <h1 id="greeting">Today</h1>
+        <p id="dateLabel" class="muted"></p>
+      </div>
+      <button id="settingsBtn" class="icon-btn" aria-label="Settings">⚙︎</button>
+    </header>
+
+    <main>
+      <section id="installBanner" class="notice hidden">
+        <strong>Add Hashi to your Home Screen before logging.</strong>
+        <span>This keeps your journal in the installed web app’s private local storage.</span>
+        <button id="dismissInstall" class="link-btn">Got it</button>
+      </section>
+
+      <section class="card">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">HOW I FEEL</p>
+            <h2>Symptoms</h2>
+          </div>
+        </div>
+        <div id="primarySymptoms" class="chip-grid"></div>
+        <button id="moreSymptomsBtn" class="secondary-btn full">More symptoms</button>
+        <div id="moreSymptoms" class="chip-grid hidden spaced"></div>
+      </section>
+
+      <section class="card">
+        <p class="eyebrow">WHAT I HAD</p>
+        <h2>Possible triggers</h2>
+        <div id="triggers" class="chip-grid"></div>
+      </section>
+
+      <section class="card">
+        <p class="eyebrow">WHAT I TOOK</p>
+        <h2>Vitamins & relief</h2>
+        <div id="vitamins" class="chip-grid"></div>
+        <button id="takeAllBtn" class="secondary-btn full">Take all vitamins</button>
+        <div class="divider"></div>
+        <div class="chip-grid">
+          <button class="chip action" data-event-type="relief" data-event-value="Tums">Tums</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <p class="eyebrow">CYCLE</p>
+        <h2>Today</h2>
+        <div class="chip-grid">
+          <button id="periodBtn" class="chip toggle">Period</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">CHECK-IN</p>
+            <h2>How was today?</h2>
+          </div>
+          <span id="checkinSaved" class="tiny-status"></span>
+        </div>
+        <div id="checkinForm" class="checkin"></div>
+      </section>
+
+      <section class="card compact-card">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">TODAY</p>
+            <h2>Timeline</h2>
+          </div>
+          <button id="clearTodayBtn" class="link-btn danger">Clear</button>
+        </div>
+        <div id="todayTimeline" class="timeline empty-state">Nothing logged yet.</div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Main navigation">
+      <button class="tab active" data-tab="today">Today</button>
+      <button class="tab" data-tab="history">History</button>
+      <button class="tab" data-tab="insights">Insights</button>
+    </nav>
+  </div>
+
+  <div id="historyView" class="full-view hidden">
+    <header class="topbar sticky">
+      <div>
+        <p class="eyebrow">HASHI</p>
+        <h1>History</h1>
+        <p class="muted">Your recent days</p>
+      </div>
+    </header>
+    <main><div id="historyList" class="history-list"></div></main>
+    <nav class="tabbar">
+      <button class="tab" data-tab="today">Today</button>
+      <button class="tab active" data-tab="history">History</button>
+      <button class="tab" data-tab="insights">Insights</button>
+    </nav>
+  </div>
+
+  <div id="insightsView" class="full-view hidden">
+    <header class="topbar sticky">
+      <div>
+        <p class="eyebrow">HASHI</p>
+        <h1>Insights</h1>
+        <p class="muted">Patterns, not diagnoses</p>
+      </div>
+    </header>
+    <main>
+      <section class="card"><div id="insightsSummary"></div></section>
+      <section class="card"><div id="patternCards"></div></section>
+    </main>
+    <nav class="tabbar">
+      <button class="tab" data-tab="today">Today</button>
+      <button class="tab" data-tab="history">History</button>
+      <button class="tab active" data-tab="insights">Insights</button>
+    </nav>
+  </div>
+
+  <div id="settingsView" class="sheet hidden" role="dialog" aria-modal="true" aria-label="Settings">
+    <div class="sheet-card">
+      <div class="section-heading">
+        <div><p class="eyebrow">HASHI</p><h2>Settings & backup</h2></div>
+        <button id="closeSettings" class="icon-btn">✕</button>
+      </div>
+      <p class="muted">Hashi stores journal data locally on this device. No account or health-data server is used.</p>
+      <button id="exportBtn" class="primary-btn full">Export backup</button>
+      <label class="secondary-btn full file-label">Import backup<input id="importInput" type="file" accept="application/json" hidden /></label>
+      <div class="divider"></div>
+      <button id="deleteAllBtn" class="secondary-btn danger full">Delete all local data</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"><span id="toastText"></span><button id="undoBtn">Undo</button></div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
