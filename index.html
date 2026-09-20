@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#f6f2f7" />
+  <meta name="theme-color" content="#f2f5f0" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Hashi" />
@@ -55,7 +55,7 @@
         <button id="takeAllBtn" class="secondary-btn full">Take all vitamins</button>
         <div class="divider"></div>
         <div class="chip-grid">
-          <button class="chip action" data-event-type="relief" data-event-value="Tums">Tums</button>
+          <button id="tumsBtn" class="chip action" data-event-type="relief" data-event-value="Tums">Tums</button>
         </div>
       </section>
 
@@ -141,8 +141,11 @@
       <p class="muted">Hashi stores journal data locally on this device. No account or health-data server is used.</p>
       <button id="exportBtn" class="primary-btn full">Export backup</button>
       <label class="secondary-btn full file-label">Import backup<input id="importInput" type="file" accept="application/json" hidden /></label>
+      <div class="export-help"><strong>For AI pattern review:</strong> export a clean journal file and upload it directly to ChatGPT. It includes timestamps, triggers, symptoms, vitamins, cycle markers, and check-ins in a readable structure.</div>
+      <button id="aiExportBtn" class="secondary-btn full">Export journal for ChatGPT</button>
       <div class="divider"></div>
       <button id="deleteAllBtn" class="secondary-btn danger full">Delete all local data</button>
+      <div class="version-note">Hashi v0.2</div>
     </div>
   </div>
 

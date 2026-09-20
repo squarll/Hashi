@@ -33,7 +33,71 @@ async function undo(){if(lastCreatedId){await deleteEvent(lastCreatedId);lastCre
 async function clearToday(){if(!confirm('Clear all event logs for today? Vitamins, period, and check-in will stay.'))return;const events=await getDayEvents(todayKey());const s=tx('events','readwrite');for(const e of events)s.delete(e.id);await new Promise((res,rej)=>{s.transaction.oncomplete=res;s.transaction.onerror=()=>rej(s.transaction.error)});await refreshToday();}
 function setTab(tab){$('#app').classList.toggle('hidden',tab!=='today');$('#historyView').classList.toggle('hidden',tab!=='history');$('#insightsView').classList.toggle('hidden',tab!=='insights');if(tab==='history')refreshHistory();if(tab==='insights')refreshInsights();window.scrollTo(0,0)}
 async function exportData(){const payload={schemaVersion:1,exportedAt:new Date().toISOString(),events:await getAllEvents(),daily:await reqPromise(tx('daily').getAll())};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`hashi-backup-${todayKey()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+async function exportForAI(){
+  const [events,dailies]=await Promise.all([getAllEvents(),reqPromise(tx('daily').getAll())]);
+  const dailyMap=new Map(dailies.map(d=>[d.day,d]));
+  const dayKeys=[...new Set([...events.map(e=>e.day),...dailies.map(d=>d.day)])].sort();
+  const eventCounts={};
+  for(const e of events){
+    const key=`${e.type}:${e.value}`;
+    eventCounts[key]=(eventCounts[key]||0)+1;
+  }
+  const journal=dayKeys.map(day=>{
+    const dayEvents=events.filter(e=>e.day===day).sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+    const d=dailyMap.get(day)||{vitamins:{},period:false,checkin:{}};
+    return {
+      date:day,
+      dateLabel:fmtDate(day),
+      events:dayEvents.map(e=>({
+        time:fmtTime(e.createdAt),
+        timestamp:e.createdAt,
+        category:e.type,
+        item:e.value
+      })),
+      vitaminsTaken:Object.entries(d.vitamins||{}).filter(([,taken])=>taken).map(([name])=>name),
+      period:!!d.period,
+      checkIn:d.checkin||{}
+    };
+  });
+  const payload={
+    exportType:'Hashi AI Journal',
+    schemaVersion:1,
+    appVersion:'0.2',
+    generatedAt:new Date().toISOString(),
+    timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||'unknown',
+    purpose:'Review a trigger and symptom journal for possible patterns and associations.',
+    interpretationNotes:[
+      'Entries reflect only what the user chose to log; absence of an entry does not prove absence of an exposure or symptom.',
+      'Possible Gluten means suspected gluten exposure or contamination, not confirmed exposure.',
+      'Timestamps can be used to examine whether symptoms followed triggers within different time windows.',
+      'Associations in this journal do not establish medical causation or diagnosis.'
+    ],
+    trackedItems:{
+      triggers:TRIGGERS,
+      symptoms:[...PRIMARY,...MORE],
+      vitamins:VITAMINS,
+      relief:['Tums'],
+      cycle:['Period'],
+      checkIn:CHECKIN
+    },
+    summary:{
+      firstDate:dayKeys[0]||null,
+      lastDate:dayKeys[dayKeys.length-1]||null,
+      daysWithData:dayKeys.length,
+      totalEvents:events.length,
+      eventCounts
+    },
+    journal
+  };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`hashi-ai-journal-${todayKey()}.json`;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  showToast('AI journal exported',false);
+}
 async function importData(file){const data=JSON.parse(await file.text());if(!Array.isArray(data.events)||!Array.isArray(data.daily))throw new Error('Invalid backup');const etx=db.transaction(['events','daily'],'readwrite');for(const e of data.events)etx.objectStore('events').put(e);for(const d of data.daily)etx.objectStore('daily').put(d);await new Promise((res,rej)=>{etx.oncomplete=res;etx.onerror=()=>rej(etx.error)});showToast('Backup imported',false);await refreshToday();}
 async function deleteAll(){if(!confirm('Delete every Hashi entry stored on this device? This cannot be undone unless you exported a backup.'))return;const t=db.transaction(['events','daily'],'readwrite');t.objectStore('events').clear();t.objectStore('daily').clear();await new Promise((res,rej)=>{t.oncomplete=res;t.onerror=()=>rej(t.error)});$('#settingsView').classList.add('hidden');await refreshToday();}
-async function init(){await openDB();renderButtons();renderCheckin();const now=new Date();$('#dateLabel').textContent=now.toLocaleDateString([], {weekday:'long',month:'long',day:'numeric'});const standalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true; if(!standalone && localStorage.getItem('hideInstall')!=='1')$('#installBanner').classList.remove('hidden');$('#moreSymptomsBtn').onclick=()=>{$('#moreSymptoms').classList.toggle('hidden');$('#moreSymptomsBtn').textContent=$('#moreSymptoms').classList.contains('hidden')?'More symptoms':'Hide extra symptoms'};$('#takeAllBtn').onclick=takeAll;$('#periodBtn').onclick=togglePeriod;$('#undoBtn').onclick=undo;$('#clearTodayBtn').onclick=clearToday;$$('.tab').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));$('#settingsBtn').onclick=()=>$('#settingsView').classList.remove('hidden');$('#closeSettings').onclick=()=>$('#settingsView').classList.add('hidden');$('#exportBtn').onclick=exportData;$('#importInput').onchange=async e=>{try{await importData(e.target.files[0])}catch(err){alert('That backup could not be imported.')}};$('#deleteAllBtn').onclick=deleteAll;$('#dismissInstall').onclick=()=>{localStorage.setItem('hideInstall','1');$('#installBanner').classList.add('hidden')};await refreshToday();if(navigator.storage?.persist)navigator.storage.persist().catch(()=>{});if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});}
+async function init(){await openDB();renderButtons();renderCheckin();const now=new Date();$('#dateLabel').textContent=now.toLocaleDateString([], {weekday:'long',month:'long',day:'numeric'});const standalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true; if(!standalone && localStorage.getItem('hideInstall')!=='1')$('#installBanner').classList.remove('hidden');$('#moreSymptomsBtn').onclick=()=>{$('#moreSymptoms').classList.toggle('hidden');$('#moreSymptomsBtn').textContent=$('#moreSymptoms').classList.contains('hidden')?'More symptoms':'Hide extra symptoms'};$('#takeAllBtn').onclick=takeAll;$('#tumsBtn').onclick=()=>addEvent('relief','Tums');$('#periodBtn').onclick=togglePeriod;$('#undoBtn').onclick=undo;$('#clearTodayBtn').onclick=clearToday;$$('.tab').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));$('#settingsBtn').onclick=()=>$('#settingsView').classList.remove('hidden');$('#closeSettings').onclick=()=>$('#settingsView').classList.add('hidden');$('#exportBtn').onclick=exportData;$('#aiExportBtn').onclick=exportForAI;$('#importInput').onchange=async e=>{try{await importData(e.target.files[0])}catch(err){alert('That backup could not be imported.')}};$('#deleteAllBtn').onclick=deleteAll;$('#dismissInstall').onclick=()=>{localStorage.setItem('hideInstall','1');$('#installBanner').classList.add('hidden')};await refreshToday();if(navigator.storage?.persist)navigator.storage.persist().catch(()=>{});if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});}
 init();
