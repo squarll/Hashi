@@ -85,3 +85,34 @@ h2 { margin: 2px 0 16px; font-size: 21px; letter-spacing:-.3px; }
 .version-note { margin-top:12px; color:var(--muted); font-size:12px; text-align:center; }
 .export-help { margin:8px 0 2px; padding:12px 13px; border-radius:14px; background:#edf4ef; color:var(--muted); font-size:13px; line-height:1.4; }
 .export-help strong { color:var(--ink); }
+
+/* A quiet forest palette, with hand-drawn botanical accents. */
+:root { --bg:#173f32; --accent:#1b4a37; --card:#fafbf6; --line:#d6e1d6; --muted:#5c7063; --shadow:0 8px 24px #08251b22; }
+.topbar { position:relative; min-height:130px; align-items:center; }
+.topbar h1 { color:#fffdf5; font-size:36px; font-weight:650; }
+.topbar .eyebrow,.topbar .muted { color:#d2e3d4; }
+.topbar::after { content:""; pointer-events:none; position:absolute; right:56px; top:7px; width:118px; height:110px; opacity:.58; background:center/contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='white' stroke-width='1.2' stroke-linecap='round'%3E%3Cpath d='M34 111Q42 63 91 13M51 75Q13 73 25 40Q53 45 51 75ZM64 56Q59 24 88 22Q90 42 64 56ZM44 92Q67 68 91 79Q75 103 44 92ZM77 40Q98 19 112 32Q101 52 77 40Z'/%3E%3C/g%3E%3C/svg%3E"); }
+.topbar>div,.topbar>button { z-index:1; }
+.card { border:1px solid #ffffffb8; }
+.tabbar { background:#f8faf4f5; }
+.tab.active { background:#e3edde; border-radius:12px; }
+button { cursor:pointer; }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline:3px solid #639a74; outline-offset:3px; }
+button:disabled { opacity:.6; cursor:wait; }
+.editor-dialog { width:min(608px,calc(100% - 24px)); max-height:88dvh; overflow-y:auto; border:1px solid #d6e1d6; border-radius:24px; padding:22px; background:var(--card); color:var(--ink); }
+.editor-dialog::backdrop { background:#09271ccc; backdrop-filter:blur(3px); }
+.editor-dialog .full { margin-top:12px; }
+.editor-dialog h2 { font-size:22px; }
+.form-field { display:block; margin:15px 0; font-weight:650; font-size:14px; }
+.form-field input,.form-field select,.form-field textarea { display:block; width:100%; min-width:0; margin-top:7px; border:1px solid var(--line); padding:12px; border-radius:12px; background:white; color:var(--ink); font:inherit; font-size:16px; }
+.form-field textarea { resize:vertical; }
+.event-row { display:grid; grid-template-columns:65px minmax(0,1fr) 14px; gap:9px; align-items:center; width:100%; min-height:60px; text-align:left; border:0; border-bottom:1px solid var(--line); background:transparent; color:var(--ink); padding:12px 0; }
+.event-row small { display:block; font-size:12px; line-height:1.5; color:var(--muted); margin-top:4px; white-space:pre-wrap; overflow-wrap:anywhere; }
+.event-row strong { overflow-wrap:anywhere; }
+.history-button { display:block; width:100%; text-align:left; color:var(--ink); border:1px solid #ffffffc0; }
+.history-hint { display:block; color:var(--accent); font-size:13px; font-weight:650; margin-top:14px; }
+.day-summary { padding:14px; background:#e6eee1; border-radius:15px; line-height:1.5; font-size:14px; }
+.day-summary p { margin:5px 0 0; }
+.check-label { display:flex; gap:10px; align-items:center; min-height:44px; }
+.check-label input { width:20px; height:20px; accent-color:var(--accent); }
+.sheet-card { max-height:90dvh; overflow-y:auto; }
