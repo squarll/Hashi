@@ -62,7 +62,7 @@ async function exportForAI(){
   const payload={
     exportType:'Hashi AI Journal',
     schemaVersion:2,
-    appVersion:'0.3',
+    appVersion:'0.3.1',
     generatedAt:new Date().toISOString(),
     timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||'unknown',
     purpose:'Review a trigger and symptom journal for possible patterns and associations.',

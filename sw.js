@@ -1,5 +1,5 @@
-const CACHE = 'hashi-v0-3-0';
-const ASSETS = ['./','index.html','styles.css','app.js','manifest.webmanifest','icons/icon-192.png','icons/icon-512.png','icons/icon-180.png'];
+const CACHE = 'hashi-v0-3-1';
+const ASSETS = ['./','index.html','styles.css','app.js','manifest.webmanifest','icons/leaf-192.png','icons/leaf-512.png','icons/leaf-180.png'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));

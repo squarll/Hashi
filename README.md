@@ -1,4 +1,4 @@
-# Hashi v0.3
+# Hashi v0.3.1
 
 A private, offline-capable journal. This update builds on v0.2 and retains the existing `hashi-db` IndexedDB database and stores. No account, analytics, remote fonts, or health-data uploads are added.
 
@@ -18,11 +18,11 @@ A private, offline-capable journal. This update builds on v0.2 and retains the e
 1. In Yazzy's currently installed Hashi app, open Settings and Export backup. Keep the JSON file.
 2. Extract this ZIP. Upload its contents into the SAME folder of the SAME GitHub repository that currently contains `index.html`. Replace matching files; do not create an extra enclosing folder.
 3. Commit the update and wait for the existing GitHub Pages deployment to finish.
-4. Fully close Hashi, reopen it while online, and reopen once more if the old screen remains. Settings should show Hashi v0.3.
+4. Fully close Hashi, reopen it while online, and reopen once more if the old screen remains. Settings should show Hashi v0.3.1.
 
 Keep using the same installed app and website address. Do not uninstall it or clear website data. Updating the site files does not clear its database. No backup import is needed for a normal update. This archive does not deploy itself.
 
-The existing Home Screen icon is retained; the botanical design is inside the app.
+This version includes a new forest green icon with a white botanical sprig, in 180, 192 and 512 pixel sizes. The Apple touch icon and web app manifest reference the new image filenames. Existing installed Home Screen icons have not been tested for automatic refresh; do not uninstall the app or clear its data just to refresh the icon.
 
 ## Export for ChatGPT
 
